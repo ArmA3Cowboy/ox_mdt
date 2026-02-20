@@ -21,14 +21,14 @@ function db.selectReportById(id)
 end
 
 local selectReports = 'SELECT `id`, `title`, `author`, DATE_FORMAT(`date`, "%Y-%m-%d %T") as date FROM `ox_mdt_reports`'
-local selectReportsById = selectReports .. 'WHERE `id` = ?'
+local selectReportsById = selectReports .. ' WHERE `id` = ?'
 
 ---@param id number | string
 function db.selectReportsById(id)
     return MySQL.rawExecute.await(selectReportsById, { id })
 end
 
-local selectReportsPaginate = selectReports .. 'ORDER BY `id` DESC LIMIT 10 OFFSET ?'
+local selectReportsPaginate = selectReports .. ' ORDER BY `id` DESC LIMIT 10 OFFSET ?'
 local selectReportsFilter = selectReports .. ' WHERE MATCH (`title`, `author`, `description`) AGAINST (? IN BOOLEAN MODE) ORDER BY `id` DESC LIMIT 10 OFFSET ?'
 
 ---@param page number

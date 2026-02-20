@@ -39,7 +39,7 @@ local function createProfileCard(data)
     end
 
     ---@diagnostic disable-next-line: param-type-mismatch
-    if not checkCardExists(data.id) then
+    if not checkCardExists(data) then
         customProfileCards[#customProfileCards+1] = data
      end
 end
