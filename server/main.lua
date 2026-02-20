@@ -7,8 +7,9 @@ require 'server.units'
 require 'server.charges'
 require 'server.calls'
 
-registerCallback('ox_mdt:openMDT', function()
-    return officers.get(source) and true
+registerCallback('ox_mdt:openMDT', function(source)
+    local officer = officers.get(source)
+    return officer and true, officer and officer.callSign
 end)
 
 ---@param source number
@@ -37,6 +38,8 @@ registerCallback('ox_mdt:editAnnouncement', function(source, data)
 
     if not officer then return end
 
+    if not announcement then return end
+
     if announcement.creator ~= officer.stateId then return end
 
     return db.updateAnnouncementContents(data.announcement.id, data.value)
@@ -47,6 +50,8 @@ end)
 registerCallback('ox_mdt:deleteAnnouncement', function(source, id)
     local officer = officers.get(source)
     local announcement = db.selectAnnouncement(id)
+
+    if not officer or not announcement then return end
 
     if not isAuthorised(source, 'delete_announcement') and announcement.creator ~= officer.stateId then return end
 

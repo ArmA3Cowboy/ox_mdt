@@ -62,7 +62,12 @@ function ox.getOfficerData()
 end
 
 function ox.getPermissions()
+    if not group then return {} end
+
     local groupPermissions = GlobalState[('group.%s:permissions'):format(group)]
+
+    if not groupPermissions then return {} end
+
     local permissions = {}
 
     for k, v in pairs(groupPermissions) do

@@ -80,7 +80,8 @@ end)
 registerCallback('ox_mdt:attachToCall', function(source, id)
     local playerUnitId = Player(source).state.mdtUnitId --[[@as number]]
 
-    if not playerUnitId or activeCalls[id].units[playerUnitId] then return false end
+    if not playerUnitId then return false end
+    if not activeCalls[id] or activeCalls[id].units[playerUnitId] then return false end
 
     activeCalls[id].units[playerUnitId] = units.getUnit(playerUnitId)
 
@@ -96,6 +97,7 @@ registerCallback('ox_mdt:detachFromCall', function(source, id)
     local playerUnitId = Player(source).state.mdtUnitId --[[@as number]]
     if not playerUnitId then return false end
 
+    if not activeCalls[id] then return false end
     if not activeCalls[id].units[playerUnitId] then return false end
 
     activeCalls[id].units[playerUnitId] = nil
@@ -123,7 +125,9 @@ end, 'mark_call_completed')
 registerCallback('ox_mdt:setCallUnits', function(source, data)
     local officer = officers.get(source)
 
-    if not officer.group == 'dispatch' then return end
+    if not officer or officer.group ~= 'dispatch' then return end
+
+    if not activeCalls[data.id] then return end
 
     activeCalls[data.id].units = {}
     for i = 1, #data.units do
